@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSSN Alumni Database</title>
+    <meta name="description" content="Search and filter MSSN alumni records by name, SET, department and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- ============================================
+         UPLOAD SCREEN (shown when no data is loaded)
+         ============================================ -->
+    <div id="upload-screen" class="screen hidden">
+        <div class="upload-card glass">
+            <div class="logo">
+                <i class='bx bxs-graduation'></i>
+            </div>
+            <h1>MSSN Alumni Database</h1>
+            <p class="upload-subtitle">Upload your <code>combined_database.csv</code> file to get started.</p>
+
+            <div id="drop-zone" class="drop-zone">
+                <i class='bx bx-upload'></i>
+                <p>Drag & drop your CSV here</p>
+                <span>or</span>
+                <label for="file-input" class="btn-primary">Browse File</label>
+                <input type="file" id="file-input" accept=".csv" hidden>
+            </div>
+
+            <p id="upload-error" class="upload-error hidden"></p>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MAIN APP SCREEN (shown after data is loaded)
+         ============================================ -->
+    <div id="app-screen" class="screen hidden">
+        <div class="container">
+            <header>
+                <div class="header-content">
+                    <div class="logo small">
+                        <i class='bx bxs-graduation'></i>
+                    </div>
+                    <div>
+                        <h1>MSSN Alumni Database</h1>
+                        <p id="header-subtitle">Loading...</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="stat-card">
+                        <span class="stat-value" id="total-count">0</span>
+                        <span class="stat-label">Showing</span>
+                    </div>
+                    <button id="suggestions-btn" class="btn-secondary" title="View pending suggestions">
+                        <i class='bx bx-edit'></i>
+                        Suggestions
+                        <span id="suggestions-badge" class="badge-count hidden">0</span>
+                    </button>
+                    <button id="change-db-btn" class="btn-ghost" title="Upload a new database file">
+                        <i class='bx bx-data'></i>
+                        Change DB
+                    </button>
+                </div>
+            </header>
+
+            <!-- Filters -->
+            <div class="filters-panel glass">
+                <div class="search-group">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="search-input" placeholder="Search by name, phone, email or source ID..." autocomplete="off">
+                    <button id="clear-search" class="clear-search hidden" title="Clear search">
+                        <i class='bx bx-x'></i>
+                    </button>
+                </div>
+                <div class="filter-dropdowns">
+                    <div class="filter-group">
+                        <label for="set-filter">SET</label>
+                        <div class="select-wrap">
+                            <select id="set-filter">
+                                <option value="">All Sets</option>
+                            </select>
+                            <i class='bx bx-chevron-down'></i>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="gender-filter">Gender</label>
+                        <div class="select-wrap">
+                            <select id="gender-filter">
+                                <option value="">All</option>
+                                <option value="Brothers">Brothers</option>
+                                <option value="Sisters">Sisters</option>
+                            </select>
+                            <i class='bx bx-chevron-down'></i>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dept-filter">Department</label>
+                        <div class="select-wrap">
+                            <select id="dept-filter">
+                                <option value="">All Departments</option>
+                            </select>
+                            <i class='bx bx-chevron-down'></i>
+                        </div>
+                    </div>
+                    <button id="reset-filters" class="btn-ghost small">
+                        <i class='bx bx-reset'></i> Reset
+                    </button>
+                    <div style="border-left: 1px solid var(--border); margin-left: 0.5rem; padding-left: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                        <div class="select-wrap" style="min-width: 80px;">
+                            <select id="export-format" style="font-size: 0.85rem; padding-top: 0.4rem; padding-bottom: 0.4rem;">
+                                <option value="csv">CSV</option>
+                                <option value="xlsx">Excel</option>
+                                <option value="json">JSON</option>
+                                <option value="md">Markdown</option>
+                            </select>
+                            <i class='bx bx-chevron-down' style="top: 50%;"></i>
+                        </div>
+                        <button id="export-filtered-btn" class="btn-primary small" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" title="Export current results">
+                            <i class='bx bx-export'></i> Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container glass">
+                <div id="table-wrap">
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>SET & Gender</th>
+                                <th>Department</th>
+                                <th>Contact Info</th>
+                                <th>Source</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+                <div id="no-results" class="empty-state hidden">
+                    <i class='bx bx-ghost'></i>
+                    <p>No records match your search.</p>
+                    <button id="clear-filters-btn" class="btn-secondary">Clear Filters</button>
+                </div>
+                <div id="result-info" class="result-info hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SUGGESTIONS PANEL (side drawer)
+         ============================================ -->
+    <div id="suggestions-overlay" class="overlay hidden"></div>
+    <div id="suggestions-panel" class="side-panel glass hidden">
+        <div class="panel-header">
+            <h2><i class='bx bx-edit'></i> Pending Suggestions</h2>
+            <button id="close-panel-btn" class="btn-ghost icon"><i class='bx bx-x'></i></button>
+        </div>
+        <div id="suggestions-list" class="suggestions-list">
+            <div class="empty-state small">
+                <i class='bx bx-inbox'></i>
+                <p>No suggestions yet.</p>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button id="export-suggestions-btn" class="btn-primary" disabled>
+                <i class='bx bx-download'></i> Export Suggestions
+            </button>
+            <button id="clear-suggestions-btn" class="btn-danger" disabled>
+                <i class='bx bx-trash'></i> Clear All
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SUGGEST EDIT MODAL
+         ============================================ -->
+    <div id="modal-overlay" class="overlay hidden"></div>
+    <div id="edit-modal" class="modal glass hidden">
+        <div class="modal-header">
+            <h2 id="modal-title">Suggest Edit</h2>
+            <button id="close-modal-btn" class="btn-ghost icon"><i class='bx bx-x'></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="modal-record-id">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="modal-name">Full Name</label>
+                    <input type="text" id="modal-name" placeholder="Full name">
+                </div>
+                <div class="form-group">
+                    <label for="modal-gender">Gender</label>
+                    <select id="modal-gender">
+                        <option value="Brothers">Brothers</option>
+                        <option value="Sisters">Sisters</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modal-set">SET (Graduation Year)</label>
+                    <input type="text" id="modal-set" placeholder="e.g. 2025">
+                </div>
+                <div class="form-group">
+                    <label for="modal-dept">Department</label>
+                    <input type="text" id="modal-dept" placeholder="e.g. ECE">
+                </div>
+                <div class="form-group">
+                    <label for="modal-phones">Phone(s)</label>
+                    <input type="text" id="modal-phones" placeholder="Separate multiple with /">
+                </div>
+                <div class="form-group">
+                    <label for="modal-alt">Alt Number(s)</label>
+                    <input type="text" id="modal-alt" placeholder="Separate multiple with /">
+                </div>
+                <div class="form-group full-width">
+                    <label for="modal-email">Email</label>
+                    <input type="email" id="modal-email" placeholder="email@example.com">
+                </div>
+                <div class="form-group full-width">
+                    <label for="modal-note">Note or Review</label>
+                    <textarea id="modal-note" rows="2" placeholder="Reason for this suggestion..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-modal-btn" class="btn-ghost">Cancel</button>
+            <button id="save-suggestion-btn" class="btn-primary">
+                <i class='bx bx-check'></i> Queue Suggestion
+            </button>
+        </div>
+    </div>
+
+    <!-- Add New Record button (floating) -->
+    <button id="add-record-fab" class="fab hidden" title="Add new record">
+        <i class='bx bx-plus'></i>
+    </button>
+
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
