@@ -495,13 +495,13 @@ function renderTable(data) {
     const tableEl = document.getElementById('data-table');
 
     if (data.length === 0) {
-        tableEl.style.display = 'none';
+        tableEl.classList.add('hidden');
         noResults.classList.remove('hidden');
         resultInfo.classList.add('hidden');
         return;
     }
 
-    tableEl.style.display = 'table';
+    tableEl.classList.remove('hidden');
     noResults.classList.add('hidden');
 
     const pageData = data.slice(0, PAGE_SIZE);

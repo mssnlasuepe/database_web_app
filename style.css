@@ -420,7 +420,7 @@ tbody tr:last-child td { border-bottom: none; }
 @media (max-width: 768px) {
 
     /* Container */
-    .container { padding: 1rem; }
+    .container { padding: 1rem 1rem 5rem 1rem; }
 
     /* Header */
     header {
@@ -477,18 +477,19 @@ tbody tr:last-child td { border-bottom: none; }
     thead { display: none; } /* hide column headers */
 
     tbody tr {
-        background: rgba(255,255,255,0.02);
+        background: rgba(255, 255, 255, 0.02);
         border: 1px solid var(--glass-border);
-        border-radius: 10px;
-        margin-bottom: 0.8rem;
-        padding: 0.8rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        padding: 1.2rem;
         position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
-    tbody tr:hover { background: rgba(255,255,255,0.04); }
-    tbody tr:last-child td { border-bottom: 1px solid rgba(255,255,255,0.04); }
+    tbody tr:hover { background: rgba(255, 255, 255, 0.035); }
+    tbody tr:last-child td { border-bottom: none; }
 
     td {
-        padding: 0.3rem 0;
+        padding: 0.4rem 0;
         border-bottom: none;
         font-size: 0.9rem;
         display: flex;
@@ -497,26 +498,53 @@ tbody tr:last-child td { border-bottom: none; }
     }
     td::before {
         content: attr(data-label);
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         color: var(--text-muted);
         font-weight: 600;
-        min-width: 72px;
-        padding-top: 0.1rem;
+        min-width: 80px;
+        padding-top: 0.15rem;
         flex-shrink: 0;
     }
     td:empty { display: none; }
 
+    /* Custom styles for cells inside the mobile cards */
+    .id-cell {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    .id-cell::before { content: none !important; }
+
+    .name-cell {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 0.6rem;
+        display: block; /* Spans full width of the card */
+    }
+    .name-cell::before { content: none !important; }
+
+    /* Hide the administrative source column on mobile to keep things clean */
+    td[data-label="Source"] {
+        display: none !important;
+    }
+
     .action-cell {
         text-align: left;
         white-space: normal;
-        padding-top: 0.6rem;
+        padding-top: 0.8rem;
         border-top: 1px solid var(--glass-border);
-        margin-top: 0.3rem;
+        margin-top: 0.4rem;
+        display: block;
     }
-    .action-cell::before { content: none; }
-    .suggest-btn { width: 100%; justify-content: center; padding: 0.5rem; }
+    .action-cell::before { content: none !important; }
+    .suggest-btn { width: 100%; justify-content: center; padding: 0.6rem; }
 
     /* Modal */
     .modal {
