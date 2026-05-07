@@ -518,18 +518,18 @@ function renderTable(data) {
         const sourceHTML = buildSourceHTML(r.source_file);
 
         tr.innerHTML = `
-            <td class="id-cell">${r.id || ''}</td>
-            <td class="name-cell">${r.name || ''}</td>
-            <td class="set-col">
+            <td class="id-cell" data-label="ID">${r.id || ''}</td>
+            <td class="name-cell" data-label="Name">${r.name || ''}</td>
+            <td class="set-col" data-label="Set">
                 <span class="chip chip-grey">${setLabel}</span>
                 ${genderChip}
             </td>
-            <td>${r.department || '<span style="color:var(--text-muted)">—</span>'}</td>
-            <td>${contactHTML}</td>
-            <td class="source-cell">${sourceHTML}</td>
+            <td data-label="Dept">${r.department || '<span style="color:var(--text-muted)">—</span>'}</td>
+            <td data-label="Contact">${contactHTML}</td>
+            <td class="source-cell" data-label="Source">${sourceHTML}</td>
             <td class="action-cell">
                 <button class="suggest-btn" data-id="${r.id}">
-                    <i class='bx bx-edit-alt'></i> Edit
+                    <i class='bx bx-edit-alt'></i> Suggest Edit
                 </button>
             </td>
         `;
